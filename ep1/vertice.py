@@ -11,6 +11,6 @@ class Vertice:
 
   def achar_peso(self, vertice):
     for aresta in self.arestas:
-      if aresta.verticeLigado == vertice:
+      if aresta.vertice_ligado == vertice:
         return aresta.peso
     return 0 # se nao achar peso ele retorna 0

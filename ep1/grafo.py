@@ -2,16 +2,16 @@ from queue import PriorityQueue
 from vertice import *
 class Grafo:
   def __init__(self):
-    self.listaVertices = []
+    self.lista_vertices = []
 
   def pegar_vertice(self, estado):
-    for vertice in self.listaVertices:
+    for vertice in self.lista_vertices:
       if vertice.estado == estado:
         return vertice 
 
   def adicionar_vertice(self, estado, heuristica=0):
     vertice = Vertice(estado, heuristica)
-    self.listaVertices.append(vertice)
+    self.lista_vertices.append(vertice)
 
   def adicionar_aresta(self, primeiro_estado, segundo_estado, peso):
     primeiro_vertice = None
@@ -26,29 +26,29 @@ class Grafo:
 
   def __str__(self):
     str_retorno = ""
-    tamanhoListaVertice = len(self.listaVertices)
+    tam_lista_vertices = len(self.lista_vertices)
     
     divisao = "-"
-    for i in range(0, tamanhoListaVertice):
+    for i in range(0, tam_lista_vertices):
       divisao += "-|--"
     divisao += "-"
     linha_matriz = "  "
     
     # cabecalho
-    for vertice in self.listaVertices:
+    for vertice in self.lista_vertices:
       linha_matriz += "| " + vertice.estado + " "
     str_retorno += linha_matriz + "\n"
     str_retorno += divisao + "\n"
   
     # linhas com os dados
     linha_matriz = ""
-    for i in range(0, (tamanhoListaVertice)):
-      for j in range(0, (tamanhoListaVertice)):
+    for i in range(0, (tam_lista_vertices)):
+      for j in range(0, (tam_lista_vertices)):
         if j == 0:
-            linha_matriz += self.listaVertices[i].estado + " | "
-        peso = self.listaVertices[i].achar_peso(self.listaVertices[j])
+            linha_matriz += self.lista_vertices[i].estado + " | "
+        peso = self.lista_vertices[i].achar_peso(self.lista_vertices[j])
         linha_matriz += str(peso)
-        if j != (tamanhoListaVertice - 1):
+        if j != (tam_lista_vertices - 1):
             linha_matriz += " | "
         else:
           str_retorno += linha_matriz + "\n"
@@ -108,32 +108,32 @@ class Grafo:
   def encontrar_caminho(self, estadoInicio, estadoDestino):
     fila = PriorityQueue()
     vertice_inicial = self.pegar_vertice(estadoInicio)
-    fila.put(vertice_inicial.arestas[0], 0)
+    fila.put(vertice_inicial.arestas[0])
     veio_de = dict()
-    custo_ate = dict()
+    custo_acumulativo = dict()
     veio_de[vertice_inicial.estado] = None
-    custo_ate[vertice_inicial.estado] = vertice_inicial.heuristica
+    custo_acumulativo[vertice_inicial.estado] = vertice_inicial.heuristica
 
     estados_visitados = ""
 
     while not fila.empty():
       arestaAtual = fila.get()
 
-      estados_visitados += arestaAtual.proprioVertice.estado
+      estados_visitados += arestaAtual.proprio_vertice.estado
 
-      if self.testar_objetivo(arestaAtual.proprioVertice.estado, estadoDestino):
+      if self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino):
           break
 
       estados_visitados += " -> "
 
-      for aresta in arestaAtual.proprioVertice.arestas:
-          novo_custo = custo_ate[arestaAtual.proprioVertice.estado] + aresta.peso
-          if aresta.verticeLigado.estado not in custo_ate or novo_custo < custo_ate[aresta.verticeLigado.estado]:
-            custo_ate[aresta.verticeLigado.estado] = novo_custo
-            aresta_descoberta = aresta.verticeLigado.arestas[0]
-            aresta_descoberta.peso_acumulado = novo_custo + aresta.verticeLigado.heuristica
+      for aresta in arestaAtual.proprio_vertice.arestas:
+          novo_custo = custo_acumulativo[arestaAtual.proprio_vertice.estado] + aresta.peso
+          if aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]:
+            custo_acumulativo[aresta.vertice_ligado.estado] = novo_custo
+            aresta_descoberta = aresta.vertice_ligado.arestas[0]
+            aresta_descoberta.peso_acumulado = novo_custo + aresta.vertice_ligado.heuristica
             fila.put(aresta_descoberta)
-            veio_de[aresta.verticeLigado.estado] = arestaAtual.proprioVertice.estado
+            veio_de[aresta.vertice_ligado.estado] = arestaAtual.proprio_vertice.estado
     print("Ordem de estados visitados: " + estados_visitados)
     array_menor_custo = []
     estado_atual = estadoDestino
