@@ -6,7 +6,7 @@ class Vertice:
     self.arestas = []
 
   def adicionarAresta(self, verticeRelacionado, peso):
-    aresta = Aresta(verticeRelacionado, peso)
+    aresta = Aresta(self, verticeRelacionado, peso)
     self.arestas.append(aresta)
 
   def acharPeso(self, vertice):
@@ -14,6 +14,3 @@ class Vertice:
       if aresta.verticeLigado == vertice:
         return aresta.peso
     return 0 # se nao achar peso ele retorna 0
-
-  def __lt__(self, outro):
-    return (self.peso + self.heuristica) < (outro.peso + outro.heuristica)
