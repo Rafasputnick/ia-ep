@@ -5,11 +5,11 @@ class Vertice:
     self.heuristica = heuristica
     self.arestas = []
 
-  def adicionarAresta(self, verticeRelacionado, peso):
+  def adicionar_aresta(self, verticeRelacionado, peso):
     aresta = Aresta(self, verticeRelacionado, peso)
     self.arestas.append(aresta)
 
-  def acharPeso(self, vertice):
+  def achar_peso(self, vertice):
     for aresta in self.arestas:
       if aresta.verticeLigado == vertice:
         return aresta.peso
