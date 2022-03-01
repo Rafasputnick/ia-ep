@@ -3,7 +3,7 @@ class Aresta:
     self.proprio_vertice = proprio_vertice
     self.vertice_ligado = vertice_ligado
     self.peso = peso
-    self.peso_acumulado = 0
+    self.prioridade = 0
 
   def __lt__(self, outro):
-    return self.peso_acumulado < outro.peso_acumulado
+    return self.prioridade < outro.prioridade
