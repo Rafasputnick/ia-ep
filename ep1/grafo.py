@@ -128,7 +128,7 @@ class Grafo:
           if aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]:
             custo_acumulativo[aresta.vertice_ligado.estado] = novo_custo
             aresta_descoberta = aresta.vertice_ligado.arestas[0]
-            aresta_descoberta.prioridade = novo_custo + aresta.vertice_ligado.heuristica
+            aresta_descoberta.prioridade = novo_custo
             fila.put(aresta_descoberta)
             veio_de[aresta.vertice_ligado.estado] = arestaAtual.proprio_vertice.estado
       
@@ -172,7 +172,7 @@ class Grafo:
       estados_visitados += " -> "
 
       for aresta in arestaAtual.proprio_vertice.arestas:
-          novo_custo = aresta.peso
+          novo_custo = custo_acumulativo[arestaAtual.proprio_vertice.estado] + aresta.peso
           if aresta.vertice_ligado.estado not in veio_de and (aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]):
             custo_acumulativo[aresta.vertice_ligado.estado] = novo_custo
             aresta_descoberta = aresta.vertice_ligado.arestas[0]

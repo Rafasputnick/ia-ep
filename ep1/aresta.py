@@ -6,4 +6,4 @@ class Aresta:
     self.prioridade = 0
 
   def __lt__(self, outro):
-    return self.prioridade < outro.prioridade
+    return self.prioridade <= outro.prioridade
