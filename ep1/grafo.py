@@ -105,14 +105,14 @@ class Grafo:
     vertice = self.pegar_vertice(estado)
     vertice.heuristica = heuristica
 
-  def encontrar_caminho(self, estadoInicio, estadoDestino):
+  def encontrar_caminho_dijkstra(self, estadoInicio, estadoDestino):
     fila = PriorityQueue()
     vertice_inicial = self.pegar_vertice(estadoInicio)
     fila.put(vertice_inicial.arestas[0])
     veio_de = dict()
     custo_acumulativo = dict()
     veio_de[vertice_inicial.estado] = None
-    custo_acumulativo[vertice_inicial.estado] = vertice_inicial.heuristica
+    custo_acumulativo[vertice_inicial.estado] = 0
 
     estados_visitados = ""
 
@@ -122,7 +122,7 @@ class Grafo:
       estados_visitados += arestaAtual.proprio_vertice.estado
 
       if self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino):
-          break
+        break
 
       estados_visitados += " -> "
 
@@ -147,6 +147,47 @@ class Grafo:
       str_menor_caminho += array_menor_custo[i]
     print("Caminho encontrado: " + str_menor_caminho)
     
+  def encontrar_caminho_a_estrela(self, estadoInicio, estadoDestino):
+    fila = PriorityQueue()
+    vertice_inicial = self.pegar_vertice(estadoInicio)
+    fila.put(vertice_inicial.arestas[0])
+    veio_de = dict()
+    custo_acumulativo = dict()
+    veio_de[vertice_inicial.estado] = None
+    custo_acumulativo[vertice_inicial.estado] = 0
+
+    estados_visitados = ""
+
+    while not fila.empty():
+      arestaAtual = fila.get()
+
+      estados_visitados += arestaAtual.proprio_vertice.estado
+
+      if self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino):
+        break
+
+      estados_visitados += " -> "
+
+      for aresta in arestaAtual.proprio_vertice.arestas:
+          novo_custo = aresta.peso
+          if aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]:
+            custo_acumulativo[aresta.vertice_ligado.estado] = novo_custo
+            aresta_descoberta = aresta.vertice_ligado.arestas[0]
+            aresta_descoberta.peso_acumulado = novo_custo + aresta.vertice_ligado.heuristica
+            fila.put(aresta_descoberta)
+            veio_de[aresta.vertice_ligado.estado] = arestaAtual.proprio_vertice.estado
+    print("Ordem de estados visitados: " + estados_visitados)
+    array_menor_custo = []
+    estado_atual = estadoDestino
+    while estado_atual != None:
+      array_menor_custo.append(estado_atual)
+      array_menor_custo.append(" -> ")
+      estado_atual = veio_de[estado_atual]
+    array_menor_custo.reverse()
+    str_menor_caminho = ""
+    for i in range(1, len(array_menor_custo)):
+      str_menor_caminho += array_menor_custo[i]
+    print("Caminho encontrado: " + str_menor_caminho)
 
   # Função booleana que verifica se o estado atual
   # é o estado objetivo do problema
