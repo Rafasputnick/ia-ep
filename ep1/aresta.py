@@ -6,4 +6,4 @@ class Aresta:
     self.peso_acumulado = 0
 
   def __lt__(self, outro):
-    return self.peso_acumulado <= outro.peso_acumulado
+    return self.peso_acumulado < outro.peso_acumulado
