@@ -114,15 +114,12 @@ class Grafo:
     veio_de[vertice_inicial.estado] = None
     custo_acumulativo[vertice_inicial.estado] = 0
 
-    estados_visitados = ""
-
-    while not fila.empty():
-      arestaAtual = fila.get()
-
-      estados_visitados += arestaAtual.proprio_vertice.estado
-
-      if self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino):
-        break
+    # preparando para primeiro loop
+    flag_continuar_procurando = not fila.empty() and not self.testar_objetivo(estadoInicio, estadoDestino)
+    arestaAtual = fila.get()
+    estados_visitados = arestaAtual.proprio_vertice.estado
+  
+    while flag_continuar_procurando:
 
       estados_visitados += " -> "
 
@@ -134,6 +131,13 @@ class Grafo:
             aresta_descoberta.prioridade = novo_custo + aresta.vertice_ligado.heuristica
             fila.put(aresta_descoberta)
             veio_de[aresta.vertice_ligado.estado] = arestaAtual.proprio_vertice.estado
+      
+      # pegando nova aresta que estiver com prioridade maior
+      arestaAtual = fila.get()
+      estados_visitados += arestaAtual.proprio_vertice.estado
+      flag_continuar_procurando = not fila.empty() and not self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino)
+
+    
     print("Ordem de estados visitados: " + estados_visitados)
     array_menor_custo = []
     estado_atual = estadoDestino
@@ -147,6 +151,7 @@ class Grafo:
       str_menor_caminho += array_menor_custo[i]
     print("Caminho encontrado: " + str_menor_caminho)
     
+    
   def encontrar_caminho_a_estrela(self, estadoInicio, estadoDestino):
     fila = PriorityQueue()
     vertice_inicial = self.pegar_vertice(estadoInicio)
@@ -156,26 +161,29 @@ class Grafo:
     veio_de[vertice_inicial.estado] = None
     custo_acumulativo[vertice_inicial.estado] = 0
 
-    estados_visitados = ""
+    
+    # preparando para primeiro loop
+    flag_continuar_procurando = not fila.empty() and not self.testar_objetivo(estadoInicio, estadoDestino)
+    arestaAtual = fila.get()
+    estados_visitados = arestaAtual.proprio_vertice.estado
+  
 
-    while not fila.empty():
-      arestaAtual = fila.get()
-
-      estados_visitados += arestaAtual.proprio_vertice.estado
-
-      if self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino):
-        break
-
+    while flag_continuar_procurando:
       estados_visitados += " -> "
 
       for aresta in arestaAtual.proprio_vertice.arestas:
           novo_custo = aresta.peso
-          if aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]:
+          if aresta.vertice_ligado.estado not in veio_de and (aresta.vertice_ligado.estado not in custo_acumulativo or novo_custo < custo_acumulativo[aresta.vertice_ligado.estado]):
             custo_acumulativo[aresta.vertice_ligado.estado] = novo_custo
             aresta_descoberta = aresta.vertice_ligado.arestas[0]
             aresta_descoberta.prioridade = novo_custo + aresta.vertice_ligado.heuristica
             fila.put(aresta_descoberta)
             veio_de[aresta.vertice_ligado.estado] = arestaAtual.proprio_vertice.estado
+      # pegando nova aresta que estiver com prioridade maior
+      arestaAtual = fila.get()
+      estados_visitados += arestaAtual.proprio_vertice.estado
+      flag_continuar_procurando = not fila.empty() and not self.testar_objetivo(arestaAtual.proprio_vertice.estado, estadoDestino)
+
     print("Ordem de estados visitados: " + estados_visitados)
     array_menor_custo = []
     estado_atual = estadoDestino
